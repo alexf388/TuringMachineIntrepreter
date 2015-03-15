@@ -15,14 +15,11 @@ public class TuringMachineIntrepeter {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		//declare array list of transitions, final states and inputs 
 		List<String> transitions = new ArrayList<String>(); 
-		ArrayList<String> new_transitions = new ArrayList<String>(); 
 		Map<Integer, List<String>> transitions_hashmap = new  HashMap<Integer, List<String>>();
-		List <Integer> keys  = new ArrayList <Integer>(); 
 		
 		ArrayList<String> final_states = new ArrayList<String>(); 
 		ArrayList<String>input = new ArrayList<String>(); 
 		
-		ArrayList<String> output = new ArrayList<String>(); 
 		
 		
 		System.out.println("initial size of input:  " + input.size()); 
@@ -185,7 +182,6 @@ public class TuringMachineIntrepeter {
 		
 		int current_state = 0; //ASSUMPTION: the starting state is always 0 
 		int head = 1; //it is at 1 because there's a Z at 0 
-		char input_symbol = ' '; 
 		Boolean found = false; 
 		
 		//input_StringArray = (input_StringArray.toString()).split("-"); 
