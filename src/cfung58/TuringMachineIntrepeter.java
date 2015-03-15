@@ -40,28 +40,37 @@ public class TuringMachineIntrepeter {
 
 		//Read File Line By Line
 		while ((strLine = br.readLine()) != null)   {
-		  // Print the content on the console
-		  //System.out.println (strLine); 
 		  
-		  char[] charArray = strLine.toCharArray(); 
+			// Print the content on the console
+			//System.out.println (strLine); 
+		  
+			//char[] charArray = null; 
+			
+			//TODO: make sure double digits become one element in array 
+			String[] str_array = strLine.split("\\s");
+			
+			
+		  char[] charArray = strLine.toCharArray();
 		  //System.out.println(charArray[0]); 
 		  
 		  if (charArray[0] == 't'){
 			  System.out.println("transition MOTHERFUCKER"); 
 			  //get the initial state 
 			  //ASSUMPTION: the input always start with state 0 
-			  iterator = Integer.parseInt(Character.toString(charArray[2])); 
+			  //iterator = Integer.parseInt(Character.toString(charArray[2])); 
+			  iterator = Integer.parseInt(str_array[1]); 
 			  
 			  //at the beginning 
 			  if (z == iterator){
 				  System.out.println("z == iterator"); 
 				  
 				  //TODO: also remember to add the strLine to transitions when you're done 
-				  strLine = strLine.replaceAll("\\s",""); 
 				  
 				  //get rid of the t at the beginning 
-				  strLine = strLine.substring(1);
-				  System.out.println (strLine); 
+				  strLine = strLine.substring(2);
+				  strLine = strLine.replaceAll("\\s","-"); 
+				  //String[] str_array = strLine.split("\\s");
+				  //System.out.println (strLine); 
 				  
 				  transitions.add(strLine); 
 			
@@ -78,15 +87,18 @@ public class TuringMachineIntrepeter {
 				  //redefine transitions with new ArrayList 
 				  transitions = new ArrayList<String>(); 
 				  
-				  z = iterator; 
-			  
-				  strLine = strLine.replaceAll("\\s",""); 
+				  z = iterator;  
 				  
 				  //get rid of the t at the beginning 
-				  strLine = strLine.substring(1);
-				  System.out.println (strLine); 
+				  strLine = strLine.substring(2);
+				  strLine = strLine.replaceAll("\\s","-");
+				  //String[] str_array = strLine.split("\\s");
+				  //System.out.println (strLine); 
 				  
 				  transitions.add(strLine); 
+				  
+				  Integer key2 = new Integer(z);
+				  transitions_hashmap.put(key2, transitions);  
 			  } 
 			  
 		  }
@@ -96,29 +108,12 @@ public class TuringMachineIntrepeter {
 			  //since all the final/accepting states will be in one line, we need to separate them 
 			  //i starts from 2, assuming that 'f' takes up 0, \0 takes up 1, and the first state takes up index 2
 			  strLine = strLine.substring(2); 
-			  char[] temp_array = strLine.toCharArray(); 
+			  String[] str_array2 = strLine.split("\\s"); 
 			  
-			  
-			  
-			  for (int i = 0 ; i < temp_array.length ; i++){
-				  //ASSUMPTION: there will be no more than 99 fucking final states 
-				  if (i+1 < temp_array.length){
-					  if (temp_array[i+1] != ' '){
-						  String s = new StringBuilder().append(temp_array[i]).append(temp_array[i+1]).toString();
-						  final_states.add(s);
-					  }
-					  else {
-						  String s = new StringBuilder().append(temp_array[i]).toString(); 
-						  final_states.add(s); 
-						  i++; 
-					  }
-				  }
-				  else{
-					  String s = new StringBuilder().append(temp_array[i]).toString(); 
-					  final_states.add(s);
-				  }
-					  
+			  for (int i = 0 ; i < str_array2.length ; i++){
+				  final_states.add(str_array2[i]); 
 			  }
+			  
 			  
 		  }
 		  else if (charArray[0] == 'i'){
@@ -153,16 +148,18 @@ public class TuringMachineIntrepeter {
 		
 		
 		for (int i = 0 ; i < input.size(); i++ ){
-						
-			char[] temp_charArray = input.get(i).toCharArray(); 
-			char[] input_charArray = new char[temp_charArray.length + 2]; //2 more for the Zs at the front and back  
-			input_charArray[0] = 'Z'; 
-			input_charArray[input_charArray.length-1] = 'Z'; 
-			System.arraycopy(temp_charArray, 0, input_charArray,1 , input_charArray.length - 2 );
-						
-					
+			String new_input = new StringBuilder("Z").append(input.get(i)).append("Z").toString(); 
+			//System.out.println(new_input); 
+			
+			String[] newer_input = new_input.split(""); 
+			//System.out.println(newer_input); // [,Z,a,#,a, Z]
+			String[] newest_input = new String[newer_input.length-1]; 
+			System.arraycopy(newer_input, 1, newest_input, 0, newest_input.length);
+			//System.out.println(newest_input); 
+			
+											
 			//transition, finish, input 
-			String[] return_result = TuringMachine(transitions_hashmap, final_states, input_charArray); 
+			String[] return_result = TuringMachine(transitions_hashmap, final_states, newest_input); 
 			
 			//TODO: print it to output.txt 
 			
@@ -177,7 +174,7 @@ public class TuringMachineIntrepeter {
 	//turing machine code 
 	private static String[] TuringMachine(
 			Map<Integer, List<String>> transitions_hashmap,
-			ArrayList<String> final_states, char[] input_charArray) {
+			ArrayList<String> final_states, String[] input_StringArray) {
 		// TODO Auto-generated method stub
 		
 		String[] return_result = new String[2]; 
@@ -186,6 +183,9 @@ public class TuringMachineIntrepeter {
 		int head = 1; //it is at 1 because there's a Z at 0 
 		char input_symbol = ' '; 
 		Boolean found = false; 
+		
+		//input_StringArray = (input_StringArray.toString()).split("-"); 
+		
 		
 		while(!found){
 			//ASSUMPTION: current_state will always be in tests 
@@ -198,27 +198,36 @@ public class TuringMachineIntrepeter {
 				//TODO: check for head here 
 				//add Zs to both ends 
 				
-				char[] tests_char = tests.get(j).toCharArray(); 
+				//ERROR HERE 
+				//TODO: figure a way not to use char, but string[] 
+				
+				String[] tests_string = tests.get(j).split("-"); 
+				//String[] tests_string_old = tests.get(j).split("-"); 
+				//String[]  tests_string= new String[tests_string_old.length-1]; 
+				//System.arraycopy(tests_string_old, 1, tests_string, 0, tests_string.length);
+				
 				
 				//if the input symbol matches the symbol at the head 
-				if (tests_char[1] == input_charArray[head]){
+				if (tests_string[1].equals(input_StringArray[head])){
 					
 					//set current_state to next state from the transition 
-					current_state = Integer.parseInt(Character.toString(tests_char[2]));  
+					current_state = Integer.parseInt(tests_string[2]);  
 					
 					//write symbol 
-					input_charArray[head] = tests_char[3];
+					input_StringArray[head] = tests_string[3];
 					
 					//head movement direction 
-					if (tests_char[4] == 'R'){
+					if (tests_string[4].equals("R")){
 						head++; 
+						found = false; 
 						break; 
 					}
-					else if (tests_char[4] == 'L'){
+					else if (tests_string[4].equals("L")){
 						head--; 
+						found = false; 
 						break; 
 					}
-					else if (tests_char[4] == 'H'){
+					else if (tests_string[4].equals("H")){
 						found = true; 
 						break; 
 					}
@@ -247,10 +256,10 @@ public class TuringMachineIntrepeter {
 		int begin = 0; 
 		int end = 0; 
 		int i = 0; 
-		System.out.println(input_charArray);
+		System.out.println(input_StringArray);
 		
-		int j = input_charArray.length -1; 
-		if (input_charArray[i+1] != 'Z'){
+		int j = input_StringArray.length -1; 
+		if (input_StringArray[i+1] != "Z"){
 			begin = i+1; 
 		}
 		else{
@@ -259,7 +268,7 @@ public class TuringMachineIntrepeter {
 		
 			
 		
-		if (input_charArray[j] == 'Z'){
+		if (!input_StringArray[j].equals("Z")){
 			end = j; 
 		}
 		else{
@@ -267,11 +276,18 @@ public class TuringMachineIntrepeter {
 		}
 		
 		//special case if there's two just two Zs 
-		if (input_charArray[0]== 'Z' && input_charArray[1] == 'Z'){
+		if (input_StringArray[0].equals("Z") && input_StringArray[1].equals("Z")){
 			return_result[0] = ""; 
 		}
-		else
-			return_result[0] = (String.valueOf(input_charArray)).substring(begin, end); 
+		else{
+			//return_result[0] = (input_StringArray.toString()).substring(begin, end); 
+			StringBuilder newString = new StringBuilder(); 
+			
+			for (int k = begin ; k <= end ; k++){
+				newString.append(input_StringArray[k]); 
+			}
+			return_result[0] = newString.toString();  
+		}
 		
 		
 		return_result[1] = message; 
