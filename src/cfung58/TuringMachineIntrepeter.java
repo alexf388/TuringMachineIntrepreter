@@ -243,27 +243,37 @@ public class TuringMachineIntrepeter {
 		}
 		
 		//remove the Zs from the input 
-		//ASSUMPTION: 1 or more Zs at both ends 
+		//ASSUMPTION: 1 Z at both ends 
 		int begin = 0; 
 		int end = 0; 
-		for (int i = 1 ; i < input_charArray.length ; i++){
-			if (input_charArray[i-1] == 'Z'){
-				begin = i; 
-				break; 
-			}
+		int i = 0; 
+		System.out.println(input_charArray);
+		
+		int j = input_charArray.length -1; 
+		if (input_charArray[i+1] != 'Z'){
+			begin = i+1; 
 		}
-			
-		for (int i = input_charArray.length-1 ; i >= 0 ; i--){
-			if (i-1 >= 0){
-				if (input_charArray[i-1] != 'Z' ){
-					end = i; 
-					break; 
-				}	
-			}
+		else{
+			begin = i; 
 		}
 		
-		//add the output string, followed by message 
-		return_result[0] = (String.valueOf(input_charArray)).substring(begin, end); 
+			
+		
+		if (input_charArray[j] == 'Z'){
+			end = j; 
+		}
+		else{
+			end = j-1; 
+		}
+		
+		//special case if there's two just two Zs 
+		if (input_charArray[0]== 'Z' && input_charArray[1] == 'Z'){
+			return_result[0] = ""; 
+		}
+		else
+			return_result[0] = (String.valueOf(input_charArray)).substring(begin, end); 
+		
+		
 		return_result[1] = message; 
 		
 		System.out.println("return_result: " + return_result[0]); 
