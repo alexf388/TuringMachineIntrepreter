@@ -256,7 +256,7 @@ public class TuringMachineIntrepeter {
 		int begin = 0; 
 		int end = 0; 
 		int i = 0; 
-		System.out.println(input_StringArray);
+		//System.out.println(input_StringArray);
 		
 		int j = input_StringArray.length -1; 
 		if (input_StringArray[i+1] != "Z"){
