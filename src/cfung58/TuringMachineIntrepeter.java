@@ -11,6 +11,8 @@ import java.util.Set;
 
 public class TuringMachineIntrepeter {
 
+	//WORKS WITH WINDOWS, JRE 1.8 
+	
 	//interpreter code 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		//declare array list of transitions, final states and inputs 
