@@ -180,14 +180,94 @@ public class TuringMachineIntrepeter {
 			ArrayList<String> final_states, char[] input_charArray) {
 		// TODO Auto-generated method stub
 		
-		String[] return_result = null; 
+		String[] return_result = new String[2]; 
 		
 		int current_state = 0; //ASSUMPTION: the starting state is always 0 
 		int head = 1; //it is at 1 because there's a Z at 0 
+		char input_symbol = ' '; 
 		Boolean found = false; 
 		
+		while(!found){
+			//ASSUMPTION: current_state will always be in tests 
+			//find the transition(s) with the current_state 
+			List<String> tests = transitions_hashmap.get(current_state);
+			
+			
+			//iterate through the transition(s) that have the current state 
+			for (int j = 0 ; j < tests.size(); j++){
+				//TODO: check for head here 
+				//add Zs to both ends 
+				
+				char[] tests_char = tests.get(j).toCharArray(); 
+				
+				//if the input symbol matches the symbol at the head 
+				if (tests_char[1] == input_charArray[head]){
+					
+					//set current_state to next state from the transition 
+					current_state = Integer.parseInt(Character.toString(tests_char[2]));  
+					
+					//write symbol 
+					input_charArray[head] = tests_char[3];
+					
+					//head movement direction 
+					if (tests_char[4] == 'R'){
+						head++; 
+						break; 
+					}
+					else if (tests_char[4] == 'L'){
+						head--; 
+						break; 
+					}
+					else if (tests_char[4] == 'H'){
+						found = true; 
+						break; 
+					}
+				}
+				else 
+					found = true; 
+					
+				
+			}//END FOR LOOP
+			
+			
+			
+		}//end while loop 
 		
+		String message = "REJECTED"; 
+		//see if the current_state is in the final_states
+		for (int i = 0 ; i < final_states.size(); i++){
+			if (current_state == Integer.parseInt(final_states.get(i))){
+				message = "ACCEPTED"; 
+				break; 
+			}
+		}
 		
+		//remove the Zs from the input 
+		//ASSUMPTION: 1 or more Zs at both ends 
+		int begin = 0; 
+		int end = 0; 
+		for (int i = 1 ; i < input_charArray.length ; i++){
+			if (input_charArray[i-1] == 'Z'){
+				begin = i; 
+				break; 
+			}
+		}
+			
+		for (int i = input_charArray.length-1 ; i >= 0 ; i--){
+			if (i-1 >= 0){
+				if (input_charArray[i-1] != 'Z' ){
+					end = i; 
+					break; 
+				}	
+			}
+		}
+		
+		//add the output string, followed by message 
+		return_result[0] = (String.valueOf(input_charArray)).substring(begin, end); 
+		return_result[1] = message; 
+		
+		System.out.println("return_result: " + return_result[0]); 
+		System.out.println("message: " + message); 
 		
 		//return the return_result
 		return return_result; 
