@@ -145,6 +145,7 @@ public class TuringMachineIntrepeter {
 		System.out.println(final_states.size()); 
 		System.out.println(final_states); 
 		*/
+		BufferedWriter out = new BufferedWriter (new FileWriter("output.txt")); 
 		
 		
 		for (int i = 0 ; i < input.size(); i++ ){
@@ -162,9 +163,12 @@ public class TuringMachineIntrepeter {
 			String[] return_result = TuringMachine(transitions_hashmap, final_states, newest_input); 
 			
 			//TODO: print it to output.txt 
+			out.write(return_result[0] + "\n");
+			out.write(return_result[1] + "\n"); 
+			
 			
 		}
-		
+		out.close(); 
 		
 	
 
